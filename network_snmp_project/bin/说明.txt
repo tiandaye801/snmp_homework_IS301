@@ -1,0 +1,2 @@
+运行平台：win10开启snmp服务，安装net-snmp（监控端可为linux/windows）
+测试方法：打开terminal\terminal.exe可执行文件即可。可在gui中测试程序的各项功能。

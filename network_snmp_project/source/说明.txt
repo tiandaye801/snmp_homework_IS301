@@ -1,0 +1,2 @@
+编写平台：Win10；
+编译工具：python3，IDE：VS Code，打包：pyinstaller
