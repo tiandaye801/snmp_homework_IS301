@@ -62,11 +62,11 @@ class Application_ui(Frame):
         self.Text3.place(relx=0.582, rely=0.682, relwidth=0.293, relheight=0.185)
        
         self.Text4Var = StringVar(value='在这里输入监控端ip地址')
-        self.Text4 = Entry(self.top, text='Text4', textvariable=self.Text4Var, font=('宋体',9))
+        self.Text4 = Entry(self.top, text='Text4', textvariable=self.Text4Var, font=('microsoft yahei',9))
         self.Text4.place(relx=0.065, rely=0.700, relwidth=0.293, relheight=0.050)
 
         self.Text5Var = StringVar(value='在这里输入刷新延迟')
-        self.Text5 = Entry(self.top, text='Text5', textvariable=self.Text5Var, font=('宋体',9))
+        self.Text5 = Entry(self.top, text='Text5', textvariable=self.Text5Var, font=('microsoft yahei',9))
         self.Text5.place(relx=0.065, rely=0.800, relwidth=0.293, relheight=0.050)
 
         self.style.configure('Label1.TLabel',anchor='w', font=('microsoft yahei',9))
@@ -84,6 +84,10 @@ class Application_ui(Frame):
 
 class Application(Application_ui):
     #这个类实现具体的事件处理回调函数。界面生成代码在Application_ui中。
+    host = 'localhost'
+    delay = 3
+    flag = False
+
     def __init__(self, master=None):
         Application_ui.__init__(self, master)
 
@@ -92,10 +96,8 @@ class Application(Application_ui):
         test1.start()
 
     def Command2_Cmd(self, event=None):
-        global host
-        global delay
-        host=self.Text4Var.get()
-        delay=float(self.Text5Var.get())
+        self.host=self.Text4Var.get()
+        self.delay=float(self.Text5Var.get())
 
     def Command3_Cmd(self, event=None):
         miblocation='C:\\usr\\share\\snmp\\mibs'
@@ -104,12 +106,10 @@ class Application(Application_ui):
 
     def ip_test1(self):
 
-        global flag
-        global delay
-        if(flag==False):
-            flag=True
+        if(self.flag==False):
+            self.flag=True
         else:
-            flag=False
+            self.flag=False
         counter_matter=0
 
         ip_in_datagrams_speed=0
@@ -119,38 +119,38 @@ class Application(Application_ui):
         udp_in_datagrams_speed=0
         udp_out_datagrams_speed=0
 
-        while(flag):
+        while(self.flag):
 
 
-           ip_in_result=float(snmpWalk(host,'IP-MIB::ipInDelivers.0')[0].split(' ')[3])
-           ip_out_result=float(snmpWalk(host,'IP-MIB::ipOutRequests.0')[0].split(' ')[3])
+           ip_in_result=float(snmpWalk(self.host,'IP-MIB::ipInDelivers.0')[0].split(' ')[3])
+           ip_out_result=float(snmpWalk(self.host,'IP-MIB::ipOutRequests.0')[0].split(' ')[3])
            ip_in_datagrams=round(ip_in_result)
            ip_out_datagrams=round(ip_out_result)
            if(counter_matter>0):
-               ip_in_datagrams_speed=round((ip_in_datagrams-ip_in_datagrams_storage)/delay,2)
-               ip_out_datagrams_speed=round((ip_out_datagrams-ip_out_datagrams_storage)/delay,2)
+               ip_in_datagrams_speed=round((ip_in_datagrams-ip_in_datagrams_storage)/self.delay,2)
+               ip_out_datagrams_speed=round((ip_out_datagrams-ip_out_datagrams_storage)/self.delay,2)
            ip_in_datagrams_storage=ip_in_datagrams
            ip_out_datagrams_storage=ip_out_datagrams
            
          
-           tcp_in_result=float(snmpWalk(host,'TCP-MIB::tcpInSegs.0')[0].split(' ')[3])
-           tcp_out_result=float(snmpWalk(host,'TCP-MIB::tcpOutSegs.0')[0].split(' ')[3])
+           tcp_in_result=float(snmpWalk(self.host,'TCP-MIB::tcpInSegs.0')[0].split(' ')[3])
+           tcp_out_result=float(snmpWalk(self.host,'TCP-MIB::tcpOutSegs.0')[0].split(' ')[3])
            tcp_in_datagrams=round(tcp_in_result)
            tcp_out_datagrams=round(tcp_out_result)
            if(counter_matter>0):
-               tcp_in_datagrams_speed=round((tcp_in_datagrams-tcp_in_datagrams_storage)/delay,2)
-               tcp_out_datagrams_speed=round((tcp_out_datagrams-tcp_out_datagrams_storage)/delay,2)
+               tcp_in_datagrams_speed=round((tcp_in_datagrams-tcp_in_datagrams_storage)/self.delay,2)
+               tcp_out_datagrams_speed=round((tcp_out_datagrams-tcp_out_datagrams_storage)/self.delay,2)
            tcp_in_datagrams_storage=tcp_in_datagrams
            tcp_out_datagrams_storage=tcp_out_datagrams
 
 
-           udp_in_result=float(snmpWalk(host,'UDP-MIB::udpInDatagrams.0')[0].split(' ')[3])
-           udp_out_result=float(snmpWalk(host,'UDP-MIB::udpOutDatagrams.0')[0].split(' ')[3])
+           udp_in_result=float(snmpWalk(self.host,'UDP-MIB::udpInDatagrams.0')[0].split(' ')[3])
+           udp_out_result=float(snmpWalk(self.host,'UDP-MIB::udpOutDatagrams.0')[0].split(' ')[3])
            udp_in_datagrams=round(udp_in_result)
            udp_out_datagrams=round(udp_out_result)
            if(counter_matter>0):
-               udp_in_datagrams_speed=round((udp_in_datagrams-udp_in_datagrams_storage)/delay,2)
-               udp_out_datagrams_speed=round((udp_out_datagrams-udp_out_datagrams_storage)/delay,2)
+               udp_in_datagrams_speed=round((udp_in_datagrams-udp_in_datagrams_storage)/self.delay,2)
+               udp_out_datagrams_speed=round((udp_out_datagrams-udp_out_datagrams_storage)/self.delay,2)
            udp_in_datagrams_storage=udp_in_datagrams
            udp_out_datagrams_storage=udp_out_datagrams
 
@@ -164,7 +164,7 @@ class Application(Application_ui):
 
 
            counter_matter+=1
-           time.sleep(delay)
+           time.sleep(self.delay)
     
 
 
@@ -178,9 +178,6 @@ def snmpWalk(host, oid):
         
 if __name__ == "__main__":
 
-    delay=3
-    host='localhost'
-    flag=False
     top = Tk()
     Application(top).mainloop()
     try: top.destroy()
